@@ -13,6 +13,7 @@ function App() {
   // https://www.react-hook-form.com/api/useform/handlesubmit/
   // https://react.dev/learn/referencing-values-with-refs
   // https://bobbyhadz.com/blog/react-document-queryselector
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("teste");
@@ -21,18 +22,33 @@ function App() {
     console.log("seconds", event.target[2].value);
   }
 
-  const createTimer = () => {
-    
-  };
+  let hours = "00";
+  let minutes = "00";
+  let seconds = "00";
 
-  const [timer, setTimer] = useState(0);
+  const [totalTimeInSeconds, setTotalTimeInSeconds] = useState(10);
+
+  hours = Math.floor(totalTimeInSeconds / (60 * 60));
+  minutes = Math.floor((totalTimeInSeconds - 60*60*hours) / 60);
+  seconds = totalTimeInSeconds - 60*60*hours - 60*minutes;
+
+  useEffect(() => {
+    if(totalTimeInSeconds === 0){
+      alert("tempo acabou");
+      return
+    }else {
+      setTimeout(() => {
+        setTotalTimeInSeconds(totalTimeInSeconds - 1);
+      }, 1000);
+    }
+  }, [totalTimeInSeconds])
 
   return (
     <div className="App">
       <h1>Timer</h1>
       <div className="card">
         <div data-timer-container>
-          <p data-timer><span data-hours>00</span> : <span data-minutes>00</span> : <span data-seconds>00</span></p>
+          <p data-timer><span data-hours>{hours.toString().padStart(2, "0")}</span> : <span data-minutes>{minutes.toString().padStart(2, "0")}</span> : <span data-seconds>{seconds.toString().padStart(2, "0")}</span></p>
         </div>
         <form data-set-timer autoComplete="off" onSubmit={handleSubmit}>
         
@@ -44,7 +60,7 @@ function App() {
             <label htmlFor="seconds" hidden>Insert seconds</label>
             <input type="text" name="seconds" id="seconds" placeholder="00"/>
           </p>
-          <button type="submit" onClick={createTimer}>
+          <button type="submit">
             Start timer
           </button>
         </form>
